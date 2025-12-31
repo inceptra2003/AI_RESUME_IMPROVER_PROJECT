@@ -341,7 +341,7 @@ export default function EnhanceResumePage() {
                                     onClick={async () => {
                                         setIsDownloading(true);
                                         try {
-                                            const result = await import("./download-actions").then(m => m.downloadPdfAction(optimizedResume));
+                                            const result = await import("@/app/actions/download-pdf").then(m => m.downloadPdfAction(optimizedResume));
 
                                             if (result.success && result.data) {
                                                 // Convert Base64 to Blob

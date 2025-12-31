@@ -86,8 +86,14 @@ export async function optimizeResume(
         return {
             meta: { templateId: "fallback", version: "0.0.0", generatedAt: new Date().toISOString() },
             header: { name: "Candidate Name (Fallback)", contact: { email: "email@example.com", phone: "123-456-7890" } },
+            analysis: {
+                score: 0,
+                keywords: { found: [], missing: [], score: "Low" },
+                improvements: [`AI Error: ${(error as any).message || "Unknown error"}`],
+                missingSkills: ["Check Vercel Env Vars"]
+            },
             sections: [
-                { id: "summary", title: "Summary", type: "summary", content: "AI processing failed or API key missing. This is a placeholder." }
+                { id: "summary", title: "Summary", type: "summary", content: "AI processing failed. Please check your API key in Vercel settings." }
             ]
         } as any;
     }

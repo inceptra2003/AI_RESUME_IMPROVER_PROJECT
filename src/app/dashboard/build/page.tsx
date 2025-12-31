@@ -15,6 +15,7 @@ export default function BuildResumePage() {
     });
 
     const [location, setLocation] = useState(""); // Local state for demo field
+    const [isDownloading, setIsDownloading] = useState(false);
 
     const handlePersonalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -458,12 +459,49 @@ export default function BuildResumePage() {
                     </div>
 
                     <button
-                        disabled
-                        className="flex items-center gap-2 bg-slate-800 text-white px-8 py-4 rounded-xl font-bold text-lg cursor-not-allowed opacity-80"
+                        onClick={async () => {
+                            setIsDownloading(true);
+                            try {
+                                const result = await import("@/app/actions/download-pdf").then(m => m.downloadPdfAction(bindToTemplate(formData)));
+
+                                if (result.success && result.data) {
+                                    const byteCharacters = atob(result.data);
+                                    const byteNumbers = new Array(byteCharacters.length);
+                                    for (let i = 0; i < byteCharacters.length; i++) {
+                                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                                    }
+                                    const byteArray = new Uint8Array(byteNumbers);
+                                    const blob = new Blob([byteArray], { type: result.type === 'pdf' ? 'application/pdf' : 'application/x-tex' });
+
+                                    const url = window.URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = result.filename || "resume.pdf";
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    window.URL.revokeObjectURL(url);
+                                    document.body.removeChild(a);
+                                } else {
+                                    alert(result.message || "Failed to generate PDF");
+                                }
+                            } catch (e: any) {
+                                console.error(e);
+                                alert("Download failed. Please try again.");
+                            } finally {
+                                setIsDownloading(false);
+                            }
+                        }}
+                        disabled={isDownloading}
+                        className="flex items-center gap-2 bg-slate-800 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-slate-500/20"
                     >
-                        <Save className="h-5 w-5" /> Generate Resume (Coming Soon)
+                        {isDownloading ? (
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                            <Save className="h-5 w-5" />
+                        )}
+                        {isDownloading ? "Generating..." : "Generate Resume"}
                     </button>
-                    <p className="text-xs text-slate-500">Resume generation will be enabled in the next phase</p>
+                    <p className="text-xs text-slate-500">Ready for download</p>
                 </div>
             </div>
         </div>
