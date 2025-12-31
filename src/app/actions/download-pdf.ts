@@ -6,10 +6,14 @@ import { generateLatex } from "@/lib/latex/generator";
 export async function downloadPdfAction(data: StandardResumeJSON) {
     try {
         const latex = generateLatex(data);
-        const encodedLatex = encodeURIComponent(latex);
+        // Use latexonline.cc public API via POST (better for large content)
+        const formData = new FormData();
+        formData.append("text", latex);
 
-        // Use latexonline.cc public API
-        const response = await fetch(`https://latexonline.cc/compile?text=${encodedLatex}`);
+        const response = await fetch("https://latexonline.cc/compile", {
+            method: "POST",
+            body: formData,
+        });
 
         if (!response.ok) {
             console.error("LatexOnline failed:", response.status, await response.text());
