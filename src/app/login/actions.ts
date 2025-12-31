@@ -60,7 +60,7 @@ const getURL = () => {
 export async function signInWithGoogle() {
     const supabase = await createClient()
     const origin = getURL()
-    const redirectUrl = `${origin}auth/callback`
+    const redirectUrl = `${origin}api/auth/callback`
 
     console.log('Attempting Google Sign-in with redirect:', redirectUrl)
 
@@ -83,7 +83,7 @@ export async function signInWithGoogle() {
 export async function signInWithGithub() {
     const supabase = await createClient()
     const origin = getURL()
-    const redirectUrl = `${origin}auth/callback`
+    const redirectUrl = `${origin}api/auth/callback`
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
@@ -99,4 +99,21 @@ export async function signInWithGithub() {
     if (data.url) {
         redirect(data.url)
     }
+}
+
+export async function loginAsDemo() {
+    // Set 24h expiration for demo session
+    const oneDay = 24 * 60 * 60 * 1000
+    const expires = Date.now() + oneDay
+
+    // @ts-ignore
+    const cookieStore = await import('next/headers').then(mod => mod.cookies())
+    cookieStore.set('demo_mode', 'true', {
+        path: '/',
+        httpOnly: true,
+        expires: expires,
+        sameSite: 'lax'
+    })
+
+    redirect('/dashboard')
 }

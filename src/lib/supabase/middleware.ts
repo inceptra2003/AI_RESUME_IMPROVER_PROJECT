@@ -37,6 +37,12 @@ export async function updateSession(request: NextRequest) {
 
     // Protected routes pattern (e.g. dashboard)
     if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
+        // Check for demo mode cookie
+        const demoMode = request.cookies.get('demo_mode')
+        if (demoMode?.value === 'true') {
+            return supabaseResponse
+        }
+
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)

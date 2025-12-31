@@ -2,8 +2,8 @@
 
 import { useTransition, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { login, signup, signInWithGoogle, signInWithGithub } from "./actions";
-import { Loader2, Mail, Lock, CheckCircle, Github, Chrome } from "lucide-react";
+import { login, signup, signInWithGoogle, signInWithGithub, loginAsDemo } from "./actions";
+import { Loader2, Mail, Lock, CheckCircle, Github, Chrome, Sparkles } from "lucide-react";
 
 function LoginForm() {
     const searchParams = useSearchParams();
@@ -37,6 +37,15 @@ function LoginForm() {
                         <button className="w-full flex items-center justify-center gap-3 bg-[#24292F] text-white font-medium py-2.5 px-4 rounded-lg hover:bg-[#24292F]/90 transition-colors shadow-sm">
                             <Github className="w-5 h-5" />
                             Continue with GitHub
+                        </button>
+                    </form>
+                </div>
+
+                <div className="relative">
+                    <form action={loginAsDemo}>
+                        <button className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold py-3 px-4 rounded-lg hover:from-amber-500 hover:to-amber-600 transition-all shadow-md">
+                            <Sparkles className="w-5 h-5 text-white" />
+                            Try Demo Mode (No Login)
                         </button>
                     </form>
                 </div>

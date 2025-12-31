@@ -3,9 +3,18 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { User, Mail, Moon, Sun, Settings } from "lucide-react";
 import { redirect } from "next/navigation";
 
+import { DEMO_USER } from "@/lib/demo";
+import { cookies } from "next/headers";
+
 export default async function ProfilePage() {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+
+    // Check for demo mode
+    const cookieStore = await cookies();
+    const isDemo = cookieStore.get("demo_mode")?.value === "true";
+
+    const user = authUser || (isDemo ? DEMO_USER : null);
 
     if (!user) {
         redirect("/login");
