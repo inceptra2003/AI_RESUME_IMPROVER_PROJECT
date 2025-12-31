@@ -11,7 +11,7 @@ export async function GET(request: Request) {
         const supabase = await createClient()
         const { error } = await supabase.auth.exchangeCodeForSession(code)
         if (!error) {
-            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || origin;
+            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://career-lift.vercel.app';
             return NextResponse.redirect(`${baseUrl}${next}`)
         }
     }

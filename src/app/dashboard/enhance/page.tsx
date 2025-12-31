@@ -51,6 +51,7 @@ export default function EnhanceResumePage() {
     const [jobDescription, setJobDescription] = useState("");
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
     const [progress, setProgress] = useState(0);
 
     // Simulated Analysis Flow
@@ -336,8 +337,49 @@ export default function EnhanceResumePage() {
                                 <p className="text-xs text-slate-500">Generated using OpenRouter AI • Standardized Template</p>
                             </div>
                             <div className="flex gap-2">
-                                <button disabled className="bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-lg opacity-50 cursor-not-allowed flex items-center gap-2">
-                                    <Download className="h-3 w-3" /> Download PDF (Coming Soon)
+                                <button
+                                    onClick={async () => {
+                                        setIsDownloading(true);
+                                        try {
+                                            const result = await import("./download-actions").then(m => m.downloadPdfAction(optimizedResume));
+
+                                            if (result.success && result.data) {
+                                                // Convert Base64 to Blob
+                                                const byteCharacters = atob(result.data);
+                                                const byteNumbers = new Array(byteCharacters.length);
+                                                for (let i = 0; i < byteCharacters.length; i++) {
+                                                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                                                }
+                                                const byteArray = new Uint8Array(byteNumbers);
+                                                const blob = new Blob([byteArray], { type: result.type === 'pdf' ? 'application/pdf' : 'application/x-tex' });
+
+                                                // Create Download Link
+                                                const url = window.URL.createObjectURL(blob);
+                                                const a = document.createElement('a');
+                                                a.href = url;
+                                                a.download = result.filename || "resume.pdf";
+                                                document.body.appendChild(a);
+                                                a.click();
+                                                window.URL.revokeObjectURL(url);
+                                                document.body.removeChild(a);
+                                            } else {
+                                                alert(result.message || "Failed to generate PDF");
+                                            }
+                                        } catch (e) {
+                                            console.error(e);
+                                            alert("Download failed. Please try again.");
+                                        } finally {
+                                            setIsDownloading(false);
+                                        }
+                                    }}
+                                    disabled={isDownloading}
+                                    className="bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-green-700 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-green-200">
+                                    {isDownloading ? (
+                                        <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <Download className="h-3 w-3" />
+                                    )}
+                                    {isDownloading ? "Generating..." : "Download PDF"}
                                 </button>
                             </div>
                         </div>
