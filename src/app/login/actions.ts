@@ -93,7 +93,7 @@ export async function signInWithGoogle() {
 export async function signInWithGithub() {
     const supabase = await createClient()
     const origin = getURL()
-    const redirectUrl = `${origin}dashboard`
+    const redirectUrl = `${origin}auth/callback`
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
