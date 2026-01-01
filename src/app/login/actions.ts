@@ -68,17 +68,12 @@ const getURL = () => {
 
 export async function signInWithGoogle() {
     const supabase = await createClient()
-    const origin = getURL()
-    const redirectUrl = `${origin}dashboard`
-
-
-    console.log('Attempting Google Sign-in with redirect:', redirectUrl)
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
-            redirectTo: redirectUrl,
-        },
+            redirectTo: "https://career-lift.vercel.app/dashboard"
+        }
     })
 
     if (error) {
@@ -92,15 +87,12 @@ export async function signInWithGoogle() {
 
 export async function signInWithGithub() {
     const supabase = await createClient()
-    const origin = getURL()
-    const redirectUrl = `${origin}dashboard`
-
 
     const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
+        provider: "github",
         options: {
-            redirectTo: redirectUrl,
-        },
+            redirectTo: "https://career-lift.vercel.app/dashboard"
+        }
     })
 
     if (error) {
