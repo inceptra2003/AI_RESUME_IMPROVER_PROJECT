@@ -50,13 +50,16 @@ const getURL = () => {
 
     // Make sure to include `https://` when not localhost.
     url = url.includes('http') ? url : `https://${url}`
-    // Make sure to include a trailing `/`.
-    url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
 
-    // Fix: Remove redundant 'api/' if it was accidentally included in the env var
-    // content of env var might be "https://site.com/api" -> we want "https://site.com/"
-    if (url.endsWith('api/')) {
-        url = url.replace('api/', '');
+    // STRICT FIX: Use the origin property to strip ANY path segments (like /api, /api/, /v1, etc.)
+    // This ensures we always get "https://domain.com" without trailing paths.
+    try {
+        const urlObj = new URL(url);
+        url = urlObj.origin + '/'; // Always ensure trailing slash
+    } catch (e) {
+        // Fallback if URL parsing fails (shouldn't happen with valid env vars)
+        console.error("URL Parsing failed in getURL:", e);
+        url = url.charAt(url.length - 1) === '/' ? url : `${url}/`;
     }
 
     console.log('Resolved URL:', url)
@@ -66,7 +69,8 @@ const getURL = () => {
 export async function signInWithGoogle() {
     const supabase = await createClient()
     const origin = getURL()
-    const redirectUrl = `${origin}api/auth/callback`
+    const redirectUrl = `${origin}dashboard`
+
 
     console.log('Attempting Google Sign-in with redirect:', redirectUrl)
 
@@ -89,7 +93,7 @@ export async function signInWithGoogle() {
 export async function signInWithGithub() {
     const supabase = await createClient()
     const origin = getURL()
-    const redirectUrl = `${origin}api/auth/callback`
+    const redirectUrl = `${origin}dashboard`
 
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
