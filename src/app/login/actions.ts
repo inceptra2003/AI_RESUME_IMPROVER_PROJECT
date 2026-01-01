@@ -53,6 +53,12 @@ const getURL = () => {
     // Make sure to include a trailing `/`.
     url = url.charAt(url.length - 1) === '/' ? url : `${url}/`
 
+    // Fix: Remove redundant 'api/' if it was accidentally included in the env var
+    // content of env var might be "https://site.com/api" -> we want "https://site.com/"
+    if (url.endsWith('api/')) {
+        url = url.replace('api/', '');
+    }
+
     console.log('Resolved URL:', url)
     return url
 }
