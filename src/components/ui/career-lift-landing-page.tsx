@@ -280,7 +280,7 @@ export default function CareerLiftLandingPage() {
                                 </div>
 
                                 <div className="mt-8">
-                                    <Link href="/dashboard" className="w-full block py-4 bg-white text-blue-900 font-bold rounded-xl text-center hover:bg-blue-50 transition-colors shadow-lg shadow-blue-900/50">
+                                    <Link href="/login" className="w-full block py-4 bg-white text-blue-900 font-bold rounded-xl text-center hover:bg-blue-50 transition-colors shadow-lg shadow-blue-900/50">
                                         Run on My Resume
                                     </Link>
                                 </div>
@@ -302,10 +302,10 @@ export default function CareerLiftLandingPage() {
                                 Upload your resume and get an ATS-optimized version in minutes.
                             </p>
                             <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link href="/dashboard" className="inline-flex h-12 items-center justify-center rounded-full bg-white px-8 font-semibold text-blue-600 transition-colors hover:bg-blue-50">
+                                <Link href="/login" className="inline-flex h-12 items-center justify-center rounded-full bg-white px-8 font-semibold text-blue-600 transition-colors hover:bg-blue-50">
                                     Enhance My Resume
                                 </Link>
-                                <Link href="/dashboard/build" className="inline-flex h-12 items-center justify-center rounded-full bg-blue-700 border border-blue-500 px-8 font-semibold text-white transition-colors hover:bg-blue-800">
+                                <Link href="/login" className="inline-flex h-12 items-center justify-center rounded-full bg-blue-700 border border-blue-500 px-8 font-semibold text-white transition-colors hover:bg-blue-800">
                                     Build Resume from Scratch
                                 </Link>
                             </div>
